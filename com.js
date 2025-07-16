@@ -3,7 +3,7 @@ const logger = require("../system/logger")
 class TelegramCommands {
   constructor(bridge) {
     this.bridge = bridge
-    this.paginationState = new Map() // Add this line to track pagination state
+    this.paginationState = new Map()
   }
 
   async handleCommand(msg) {
@@ -23,7 +23,7 @@ class TelegramCommands {
     if (!this.bridge.isUserAuthenticated(userId)) {
       await this.bridge.telegramBot.sendMessage(
         msg.chat.id,
-        "🔒 Access denied. Use /password [your_password] to authenticate.",
+        "🔒 Access denied. Use /password to authenticate.",
         { parse_mode: "Markdown" },
       )
       return
@@ -165,10 +165,6 @@ class TelegramCommands {
     }
   }
 
-  async handleSync(chatId) {
-    // This function is now handled in telegram-bridge.js to allow message editing
-    // It's kept here for completeness but the actual logic is in the bridge
-  }
 
   async handleSearchContact(chatId, args, page = 0, messageId = null) {
     if (args.length === 0) {
@@ -209,7 +205,7 @@ class TelegramCommands {
 
     const result = matches
       .slice(startIndex, endIndex)
-      .map(([phone, name], index) => `${startIndex + index + 1}. 📱 ${name || "Unknown"} (+${phone})`)
+      .map(([phone, name], index) => `${startIndex + index + 1}. ${name || "Unknown"} (+${phone})`)
       .join("\n")
 
     const message =
@@ -224,14 +220,14 @@ class TelegramCommands {
 
     if (currentPage > 0) {
       buttonRow.push({
-        text: "⬅️ Previous",
+        text: "Previous",
         callback_data: `search_prev_${currentPage - 1}_${Buffer.from(query).toString("base64")}`,
       })
     }
 
     if (currentPage < totalPages - 1) {
       buttonRow.push({
-        text: "Next ➡️",
+        text: "Next",
         callback_data: `search_next_${currentPage + 1}_${Buffer.from(query).toString("base64")}`,
       })
     }
@@ -343,7 +339,7 @@ class TelegramCommands {
 
     const contactList = contacts
       .slice(startIndex, endIndex)
-      .map(([phone, name], index) => `${startIndex + index + 1}. 📱 ${name || "Unknown"} (+${phone})`)
+      .map(([phone, name], index) => `${startIndex + index + 1}. ${name || "Unknown"} (+${phone})`)
       .join("\n")
 
     const message =
@@ -357,14 +353,14 @@ class TelegramCommands {
 
     if (currentPage > 0) {
       buttonRow.push({
-        text: "⬅️ Previous",
+        text: "Previous",
         callback_data: `contacts_prev_${currentPage - 1}`,
       })
     }
 
     if (currentPage < totalPages - 1) {
       buttonRow.push({
-        text: "Next ➡️",
+        text: "Next",
         callback_data: `contacts_next_${currentPage + 1}`,
       })
     }
@@ -471,7 +467,6 @@ class TelegramCommands {
   async registerBotCommands() {
     try {
       await this.bridge.telegramBot.setMyCommands([
-        { command: "password", description: "Authenticate with password" },
         { command: "start", description: "Show bot info" },
         { command: "status", description: "Show bridge status" },
         { command: "send", description: "Send WhatsApp message" },
@@ -481,6 +476,7 @@ class TelegramCommands {
         { command: "addfilter", description: "Add blocked word" },
         { command: "filters", description: "Show blocked words" },
         { command: "clearfilters", description: "Clear all filters" },
+        { command: "password", description: "Authenticate with password" },
       ])
       logger.debug("Telegram bot commands registered")
     } catch (error) {
