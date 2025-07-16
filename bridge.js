@@ -283,6 +283,13 @@ class TelegramBridge {
       }),
     )
 
+    this.telegramBot.on(
+      "callback_query",
+      this.wrapHandler(async (callbackQuery) => {
+        await this.commands.handleCallbackQuery(callbackQuery)
+      }),
+    )
+
     this.telegramBot.on("polling_error", (error) => {
       logger.error("Telegram polling error:", error)
     })
@@ -1450,7 +1457,7 @@ class TelegramBridge {
     } catch (error) {
       const desc = error.response?.data?.description || error.message
       if (desc.includes("message thread not found")) {
-        logger.warn("Status topic deleted. Recreating and retrying...")
+        logger.warn("Status topic deleted. Recreating...")
 
         this.chatMappings.delete("status@broadcast")
         this.profilePicCache.delete("status@broadcast")
