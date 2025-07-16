@@ -21,11 +21,9 @@ class TelegramCommands {
 
     // Check authentication for all other commands
     if (!this.bridge.isUserAuthenticated(userId)) {
-      await this.bridge.telegramBot.sendMessage(
-        msg.chat.id,
-        "🔒 Access denied. Use /password to authenticate.",
-        { parse_mode: "Markdown" },
-      )
+      await this.bridge.telegramBot.sendMessage(msg.chat.id, "🔒 Access denied. Use /password to authenticate.", {
+        parse_mode: "Markdown",
+      })
       return
     }
 
@@ -39,9 +37,6 @@ class TelegramCommands {
           break
         case "/send":
           await this.handleSend(msg.chat.id, args)
-          break
-        case "/sync":
-          await this.handleSync(msg.chat.id)
           break
         case "/contacts":
           const pageArg = args[0] ? Number.parseInt(args[0]) - 1 : 0 // Convert to 0-based index
@@ -164,7 +159,6 @@ class TelegramCommands {
       await this.bridge.telegramBot.sendMessage(chatId, `❌ Error: ${error.message}`, { parse_mode: "Markdown" })
     }
   }
-
 
   async handleSearchContact(chatId, args, page = 0, messageId = null) {
     if (args.length === 0) {
@@ -454,7 +448,6 @@ class TelegramCommands {
       `/start - Show bot info\n` +
       `/status - Show bridge status\n` +
       `/send <number> <msg> - Send WhatsApp message\n` +
-      `/sync - Sync WhatsApp contacts\n` +
       `/contacts [page] - List contacts (with pagination)\n` +
       `/searchcontact <name/phone> - Search contacts (with pagination)\n` +
       `/addfilter <word> - Block WA messages starting with it\n` +
@@ -470,7 +463,6 @@ class TelegramCommands {
         { command: "start", description: "Show bot info" },
         { command: "status", description: "Show bridge status" },
         { command: "send", description: "Send WhatsApp message" },
-        { command: "sync", description: "Sync WhatsApp contacts" },
         { command: "contacts", description: "List contacts" },
         { command: "searchcontact", description: "Search WhatsApp contacts" },
         { command: "addfilter", description: "Add blocked word" },
